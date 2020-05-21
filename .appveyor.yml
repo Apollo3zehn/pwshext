@@ -1,0 +1,47 @@
+version: '{build}'
+clone_depth: 1
+
+image:
+- Ubuntu
+- Visual Studio 2019
+
+environment:
+  ApiKey:
+    secure: SeomICfFXAQobyK5uMGeAhb0uljBxicG4Z56pWxWCXA=
+
+branches:
+  only:
+  - master
+  - dev
+
+configuration:
+  - Release
+
+init:
+  - ps: git config --global core.autocrlf true
+
+before_build:
+- ps: dotnet --info
+- ps: "Get-ChildItem Env:"
+
+build_script:
+- ps: dotnet pack ./src/pwshext/pwshext.csproj -c $Env:CONFIGURATION /p:Build=$Env:APPVEYOR_BUILD_NUMBER /p:IsFinalBuild=$Env:APPVEYOR_REPO_TAG
+
+test_script:
+- ps: dotnet test ./tests/pwshext.Tests -c $Env:CONFIGURATION /p:BuildProjectReferences=false
+
+artifacts:
+  - path: ./artifacts/packages/**/*.nupkg
+
+deploy:
+
+# NuGet (master)
+  - provider: NuGet
+    server: https://www.nuget.org/api/v2/package
+    api_key:
+      secure: WqZcnRwOmzIa+INti/HnihBrUz0u71rTRNElX/2wbuAIbzMX6SV8h4OxJtCaX2vN
+    skip_symbols: true
+    artifact: /.*\.nupkg/ 
+    on:
+      CI_WINDOWS: true
+      APPVEYOR_REPO_TAG: true
