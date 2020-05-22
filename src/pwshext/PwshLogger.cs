@@ -12,6 +12,16 @@ namespace OneDas.Hdf.VdsTool
             _logger = logger;
         }
 
+        public void LogTrace(string message)
+        {
+            _logger.LogTrace(message);
+        }
+
+        public void LogDebug(string message)
+        {
+            _logger.LogDebug(message);
+        }
+
         public void LogInformation(string message)
         {
             _logger.LogInformation(message);
@@ -22,19 +32,14 @@ namespace OneDas.Hdf.VdsTool
             _logger.LogWarning(message);
         }
 
-        public void LogDebug(string message)
-        {
-            _logger.LogDebug(message);
-        }
-
-        public void LogTrace(string message)
-        {
-            _logger.LogTrace(message);
-        }
-
         public void LogError(string message)
         {
             _logger.LogError(message);
+        }
+
+        public void LogCritical(string message)
+        {
+            _logger.LogCritical(message);
         }
     }
 }
