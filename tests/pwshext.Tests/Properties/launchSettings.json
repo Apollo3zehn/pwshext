@@ -1,7 +1,0 @@
-{
-  "profiles": {
-    "pwshext.Tests": {
-      "commandName": "Project"
-    }
-  }
-}
