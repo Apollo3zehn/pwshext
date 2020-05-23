@@ -154,7 +154,7 @@ With the new template the file output becomes shorter:
 16:18 [INF] (MyLoggerName) Host message
 ```
 
-Please see this [Link](https://github.com/serilog/serilog/wiki/Formatting-Output) for an explanation of the serilog format.
+Please see this [Link](https://github.com/serilog/serilog/wiki/Formatting-Output) for a description of the serilog format.
 
 # Connect to a FTP(S) server with FluentFTP:
 
