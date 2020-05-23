@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Management.Automation;
 
-namespace OneDas.Hdf.VdsTool.Commands
+namespace pwshext.Commands
 {
     public class ExecCommand
     {
@@ -35,10 +35,13 @@ namespace OneDas.Hdf.VdsTool.Commands
                 // ensure SSH.NET is loaded
                 _ = new PasswordAuthenticationMethod("Test", "User");
 
-                var logger = new PwshLogger(_logger);
-                _logger.LogInformation($"Executing script '{_scriptFilePath}'.");
+                // create listener
+                ps.Streams.Verbose.DataAdded += (sender, e) => _logger.LogTrace(ps.Streams.Verbose[e.Index].Message);
+                ps.Streams.Debug.DataAdded += (sender, e) => _logger.LogDebug(ps.Streams.Debug[e.Index].Message);
+                ps.Streams.Information.DataAdded += (sender, e) => _logger.LogInformation(ps.Streams.Information[e.Index].MessageData.ToString());
+                ps.Streams.Warning.DataAdded += (sender, e) => _logger.LogWarning(ps.Streams.Warning[e.Index].Message);
+                ps.Streams.Error.DataAdded += (sender, e) => _logger.LogError(ps.Streams.Error[e.Index].Exception.Message);
 
-                ps.Runspace.SessionStateProxy.SetVariable("logger", logger);
                 ps.Runspace.SessionStateProxy.SetVariable("scriptRoot", Path.GetDirectoryName(_scriptFilePath));
 
                 ps.AddScript(File.ReadAllText(_scriptFilePath))

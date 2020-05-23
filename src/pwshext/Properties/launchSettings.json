@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "pwshext": {
+      "commandName": "Project",
+      "commandLineArgs": "exec --arg arg1=value1 --arg \"arg2=value 2 with space\" --logger MyLoggerName script.ps1",
+      "workingDirectory": "C:\\Users\\Vincent\\Desktop"
+    }
+  }
+}

@@ -1,4 +1,3 @@
-using OneDas.Hdf.VdsTool;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,18 +9,22 @@ namespace pwshext.Tests
     public class ExecTests
     {
         [Fact]
-        public async Task CanExecuteScript()
+        public async Task CanUseLogging()
         {
             // Arrange
 
             /* script */
             var scriptContent = @"
-$logger.LogTrace(""Trace"");
-$logger.LogDebug(""Debug"");
-$logger.LogInformation(""Information"");
-$logger.LogWarning(""Warning"");
-$logger.LogError(""Error"");
-$logger.LogCritical(""Critical"");
+$VerbosePreference  = ""Continue""
+$DebugPreference    = ""Continue""
+
+Write-Verbose       ""Write-Verbose""
+Write-Debug         ""Write-Debug""
+Write-Information   ""Write-Information""
+Write-Warning       ""Write-Warning""
+Write-Error         ""Write-Error""
+
+Write-Host          ""Write-Host""
 ";
 
             var tmpScriptFilePath = Path.GetTempFileName();
@@ -32,7 +35,7 @@ $logger.LogCritical(""Critical"");
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --script {tmpScriptFilePath} --id MyId --log-folder {logFolderPath} --log-level Trace"
+            var args = $"exec --script {tmpScriptFilePath} --logger MyLogger --log-folder {logFolderPath} --log-level Trace"
                 .Split(" ");
 
             try
@@ -45,19 +48,76 @@ $logger.LogCritical(""Critical"");
                 Assert.True(files.Any());
 
                 var actual = File.ReadAllLines(files.First())
-                    .Skip(1)
-                    .Take(6)
                     .Select(value => value.Substring(21))
                     .ToArray();
 
                 var expected = new string[]
                 {
-                    "[VRB] (MyId) Trace",
-                    "[DBG] (MyId) Debug",
-                    "[INF] (MyId) Information",
-                    "[WRN] (MyId) Warning",
-                    "[ERR] (MyId) Error",
-                    "[FTL] (MyId) Critical"
+                    "[VRB] (MyLogger) Write-Verbose",
+                    "[DBG] (MyLogger) Write-Debug",
+                    "[INF] (MyLogger) Write-Information",
+                    "[WRN] (MyLogger) Write-Warning",
+                    "[ERR] (MyLogger) Write-Error",
+                    "[INF] (MyLogger) Write-Host",
+                };
+
+                Assert.True(actual.SequenceEqual(expected));
+            }
+            finally
+            {
+                if (File.Exists(tmpScriptFilePath))
+                    File.Delete(tmpScriptFilePath);
+
+                if (Directory.Exists(logFolderPath))
+                    Directory.Delete(logFolderPath, recursive: true);
+            }
+        }
+
+        [Fact]
+        public async Task CanUseLogLevels()
+        {
+            // Arrange
+
+            /* script */
+            var scriptContent = @"
+$VerbosePreference  = ""Continue""
+$DebugPreference    = ""Continue""
+
+Write-Verbose       ""Write-Verbose""
+Write-Debug         ""Write-Debug""
+Write-Information   ""Write-Information""
+Write-Warning       ""Write-Warning""
+Write-Error         ""Write-Error""
+";
+
+            var tmpScriptFilePath = Path.GetTempFileName();
+            File.WriteAllText(tmpScriptFilePath, scriptContent);
+
+            /* logging */
+            var logFolderPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(logFolderPath);
+
+            /* args */
+            var args = $"exec --script {tmpScriptFilePath} --logger MyLogger --log-folder {logFolderPath} --log-level Warning"
+                .Split(" ");
+
+            try
+            {
+                // Act
+                await Program.Main(args);
+
+                // Assert
+                var files = Directory.EnumerateFiles(logFolderPath);
+                Assert.True(files.Any());
+
+                var actual = File.ReadAllLines(files.First())
+                    .Select(value => value.Substring(21))
+                    .ToArray();
+
+                var expected = new string[]
+                {
+                    "[WRN] (MyLogger) Write-Warning",
+                    "[ERR] (MyLogger) Write-Error"
                 };
 
                 Assert.True(actual.SequenceEqual(expected));
@@ -86,10 +146,10 @@ Param (
     [string]$param4
 )
 
-$logger.LogInformation($param1);
-$logger.LogInformation($param2);
-$logger.LogInformation($param3);
-$logger.LogInformation($param4);
+Write-Information $param1;
+Write-Information $param2;
+Write-Information $param3;
+Write-Information $param4;
 ";
 
             var tmpScriptFilePath = Path.GetTempFileName();
@@ -100,7 +160,7 @@ $logger.LogInformation($param4);
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --script {tmpScriptFilePath} --id MyId --log-folder {logFolderPath} --arg param1=value1 param2=value2 --arg param3=with_=_sign. --arg param4=Greetings"
+            var args = $"exec --script {tmpScriptFilePath} --logger MyLogger --log-folder {logFolderPath} --arg param1=value1 param2=value2 --arg param3=with_=_sign. --arg param4=Greetings"
                 .Split(" ")
                 .Select(value => value.Replace('_', ' '))
                 .ToArray();
@@ -115,17 +175,15 @@ $logger.LogInformation($param4);
                 Assert.True(files.Any());
 
                 var actual = File.ReadAllLines(files.First())
-                    .Skip(1)
-                    .Take(4)
                     .Select(value => value.Substring(21))
                     .ToArray();
 
                 var expected = new string[]
                 {
-                    "[INF] (MyId) value1",
-                    "[INF] (MyId) value2",
-                    "[INF] (MyId) with = sign.",
-                    "[INF] (MyId) Greetings"
+                    "[INF] (MyLogger) value1",
+                    "[INF] (MyLogger) value2",
+                    "[INF] (MyLogger) with = sign.",
+                    "[INF] (MyLogger) Greetings"
                 };
 
                 Assert.True(actual.SequenceEqual(expected));
@@ -141,7 +199,7 @@ $logger.LogInformation($param4);
         }
 
         [Fact]
-        public async Task CanCallScriptWithFunction()
+        public async Task CanExecuteScriptWithFunction()
         {
             // Arrange
 
@@ -153,7 +211,7 @@ Param (
 
 function Invoke([string]$message)
 {
-    $logger.LogInformation($param);
+    Write-Information $message;
 }
 
 Invoke($param)
@@ -167,7 +225,7 @@ Invoke($param)
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --script {tmpScriptFilePath} --id MyId --log-folder {logFolderPath} --arg param=MyMessage"
+            var args = $"exec --script {tmpScriptFilePath} --logger MyLogger --log-folder {logFolderPath} --arg param=MyMessage"
                 .Split(" ")
                 .Select(value => value.Replace('_', ' '))
                 .ToArray();
@@ -182,14 +240,12 @@ Invoke($param)
                 Assert.True(files.Any());
 
                 var actual = File.ReadAllLines(files.First())
-                    .Skip(1)
-                    .Take(1)
                     .Select(value => value.Substring(21))
                     .ToArray();
 
                 var expected = new string[]
                 {
-                    "[INF] (MyId) MyMessage"
+                    "[INF] (MyLogger) MyMessage"
                 };
 
                 Assert.True(actual.SequenceEqual(expected));
@@ -213,12 +269,12 @@ Invoke($param)
             var scriptContent = @"
 $ftpClient      = New-Object -TypeName FluentFTP.FtpClient
 
-$logger.LogInformation($ftpClient.GetType());
+Write-Information $ftpClient.GetType();
 
 $ftpClient      = New-Object -TypeName Renci.SshNet.PasswordAuthenticationMethod `
                              -ArgumentList UserName, Password;
 
-$logger.LogInformation($ftpClient.GetType());
+Write-Information $ftpClient.GetType();
 ";
 
             var tmpScriptFilePath = Path.GetTempFileName();
@@ -229,7 +285,7 @@ $logger.LogInformation($ftpClient.GetType());
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --script {tmpScriptFilePath} --id MyId --log-folder {logFolderPath} --arg param=MyMessage"
+            var args = $"exec --script {tmpScriptFilePath} --logger MyLogger --log-folder {logFolderPath} --arg param=MyMessage"
                 .Split(" ")
                 .Select(value => value.Replace('_', ' '))
                 .ToArray();
@@ -244,15 +300,13 @@ $logger.LogInformation($ftpClient.GetType());
                 Assert.True(files.Any());
 
                 var actual = File.ReadAllLines(files.First())
-                    .Skip(1)
-                    .Take(2)
                     .Select(value => value.Substring(21))
                     .ToArray();
 
                 var expected = new string[]
                 {
-                    "[INF] (MyId) FluentFTP.FtpClient",
-                    "[INF] (MyId) Renci.SshNet.PasswordAuthenticationMethod"
+                    "[INF] (MyLogger) FluentFTP.FtpClient",
+                    "[INF] (MyLogger) Renci.SshNet.PasswordAuthenticationMethod"
                 };
 
                 Assert.True(actual.SequenceEqual(expected));
