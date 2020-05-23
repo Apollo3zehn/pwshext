@@ -6,16 +6,18 @@
 Powershell Extended aims to bring .NET logging and FTP access functionality. Therefore it has an integrated [Console logger](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-3.1#console), [File logger](https://github.com/serilog/serilog), [FTP(s) client](https://github.com/robinrodricks/FluentFTP) and [SFTP client](https://github.com/sshnet/SSH.NET).
 
 # Versioning
-Powershell extended uses the official Powershell version (e.g. 7.0.1) and extendes it with its own version (7.0.100).
+Powershell Extended uses the official Powershell version (e.g. 7.0.1) and extends it with its own version (7.0.100).
 
 # Installation
-First make sure you have the .NET Core 3.1 SDK installed. you can find it [here](https://dotnet.microsoft.com/download/dotnet-core/3.1).
+First make sure you have the .NET Core 3.1 SDK installed. You can find it [here](https://dotnet.microsoft.com/download/dotnet-core/3.1).
 
-Once it is available, run the following command to install the global powershell tool:
+Once it is installed, run the following command to get the tool:
 
 ```ps
 dotnet tool install --global pwshext
 ```
+
+This installs the tool globally and creates makes the pwshext command available.
 
 # Passing arguments
 

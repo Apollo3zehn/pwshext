@@ -1,14 +1,11 @@
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using pwshext.Commands;
 using System;
-using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 

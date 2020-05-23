@@ -35,7 +35,7 @@ Write-Host          ""Write-Host""
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --script {tmpScriptFilePath} --logger MyLogger --log-folder {logFolderPath} --log-level Trace"
+            var args = $"exec --logger MyLogger --file-logger {logFolderPath} --log-level Trace {tmpScriptFilePath}"
                 .Split(" ");
 
             try
@@ -48,7 +48,7 @@ Write-Host          ""Write-Host""
                 Assert.True(files.Any());
 
                 var actual = File.ReadAllLines(files.First())
-                    .Select(value => value.Substring(21))
+                    .Select(value => value.Substring(20))
                     .ToArray();
 
                 var expected = new string[]
@@ -98,7 +98,7 @@ Write-Error         ""Write-Error""
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --script {tmpScriptFilePath} --logger MyLogger --log-folder {logFolderPath} --log-level Warning"
+            var args = $"exec --logger MyLogger --file-logger {logFolderPath} --log-level Warning {tmpScriptFilePath}"
                 .Split(" ");
 
             try
@@ -111,7 +111,7 @@ Write-Error         ""Write-Error""
                 Assert.True(files.Any());
 
                 var actual = File.ReadAllLines(files.First())
-                    .Select(value => value.Substring(21))
+                    .Select(value => value.Substring(20))
                     .ToArray();
 
                 var expected = new string[]
@@ -160,7 +160,7 @@ Write-Information $param4;
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --script {tmpScriptFilePath} --logger MyLogger --log-folder {logFolderPath} --arg param1=value1 param2=value2 --arg param3=with_=_sign. --arg param4=Greetings"
+            var args = $"exec --logger MyLogger --file-logger {logFolderPath} --arg param1=value1 param2=value2 --arg param3=with_=_sign. --arg param4=Greetings {tmpScriptFilePath}"
                 .Split(" ")
                 .Select(value => value.Replace('_', ' '))
                 .ToArray();
@@ -175,7 +175,7 @@ Write-Information $param4;
                 Assert.True(files.Any());
 
                 var actual = File.ReadAllLines(files.First())
-                    .Select(value => value.Substring(21))
+                    .Select(value => value.Substring(20))
                     .ToArray();
 
                 var expected = new string[]
@@ -225,7 +225,7 @@ Invoke($param)
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --script {tmpScriptFilePath} --logger MyLogger --log-folder {logFolderPath} --arg param=MyMessage"
+            var args = $"exec --logger MyLogger --file-logger {logFolderPath} --arg param=MyMessage {tmpScriptFilePath}"
                 .Split(" ")
                 .Select(value => value.Replace('_', ' '))
                 .ToArray();
@@ -240,7 +240,7 @@ Invoke($param)
                 Assert.True(files.Any());
 
                 var actual = File.ReadAllLines(files.First())
-                    .Select(value => value.Substring(21))
+                    .Select(value => value.Substring(20))
                     .ToArray();
 
                 var expected = new string[]
@@ -285,7 +285,7 @@ Write-Information $ftpClient.GetType();
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --script {tmpScriptFilePath} --logger MyLogger --log-folder {logFolderPath} --arg param=MyMessage"
+            var args = $"exec --logger MyLogger --file-logger {logFolderPath} {tmpScriptFilePath}"
                 .Split(" ")
                 .Select(value => value.Replace('_', ' '))
                 .ToArray();
@@ -300,7 +300,7 @@ Write-Information $ftpClient.GetType();
                 Assert.True(files.Any());
 
                 var actual = File.ReadAllLines(files.First())
-                    .Select(value => value.Substring(21))
+                    .Select(value => value.Substring(20))
                     .ToArray();
 
                 var expected = new string[]
