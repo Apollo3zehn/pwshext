@@ -13,7 +13,7 @@ First make sure you have the .NET Core 3.1 SDK installed. You can find it [here]
 
 Once it is installed, run the following command to get the tool:
 
-```ps
+```powershell
 dotnet tool install --global pwshext
 ```
 
@@ -22,19 +22,19 @@ This installs the tool globally and creates makes the pwshext command available.
 # Passing arguments
 
 To execute a simple script, just type:
-```ps
+```powershell
 pwshext exec sample.ps1
 ```
 
 If you want to pass arguments to the script, you need to add the `--arg` argument for each argument to pass.
 
-```ps
+```powershell
 pwshext exec --arg arg1=value1 --arg "arg2=value 2 with space" sample.ps1
 ```
 
 Make sure your script accepts the desired arguments:
 
-```ps
+```powershell
 Param (
     [string]$arg1,
     [string]$arg2
@@ -56,20 +56,20 @@ Please see the help (`pwshext exec -h`) for more information.
 
 ## Console vs. File Logger
 By default, all output is printed to the console similar to a standard powershell application. However, you may prefer structured logging. To get this, you need to give the logger a name and add the `--console-logger` option:
-```ps
+```powershell
 pwshext exec --logger MyLoggerName --console-logger sample.ps1
 ```
 
 Alternatively, if you need a file logger (using serilog), do the following:
 
-```ps
-pwshext exec --logger MyLoggerName --file-logger <parent-folder-path> sample.ps1
+```powershell
+pwshext exec --logger MyLoggerName --file-logger parent-folder-path sample.ps1
 ```
 
 ## Writing Messages
 To actually log anything, you can use the standard Powershell `Write-XXX` methods:
 
-```ps
+```powershell
 # if you want verbose messages to be displayed
 $VerbosePreference = 'Continue'
 
@@ -132,7 +132,7 @@ info: MyLoggerName[0]
 
 If enabled, the file logger will format the output like this:
 
-```ps
+```powershell
 2020-05-23T16:18:28 [VRB] (MyLoggerName) Verbose message
 2020-05-23T16:18:28 [DBG] (MyLoggerName) Debug message
 2020-05-23T16:18:28 [INF] (MyLoggerName) Information message
@@ -158,7 +158,7 @@ Please see this [Link](https://github.com/serilog/serilog/wiki/Formatting-Output
 
 # Connect to a FTP(S) server with FluentFTP:
 
-```ps
+```powershell
 # FTP settings
 $hostName       = 'ftp.testserver.org'
 $port           = 21
@@ -182,7 +182,7 @@ $Write-Information "Connected to ftp://$($userName)@$($hostName):$($port)."
 
 # Connect to a SFTP server with SSH.NET
 
-```ps
+```powershell
 # FTP settings
 $hostName       = 'ftp.testserver.org'
 $port           = 21
