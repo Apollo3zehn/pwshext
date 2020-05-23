@@ -160,7 +160,7 @@ Write-Information $param4;
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --logger MyLogger --file-logger {logFolderPath} --arg param1=value1 param2=value2 --arg param3=with_=_sign. --arg param4=Greetings {tmpScriptFilePath}"
+            var args = $"exec {tmpScriptFilePath} --logger MyLogger --file-logger {logFolderPath} --arg param1=value1 param2=value2 --arg param3=with_=_sign. --arg param4=Greetings"
                 .Split(" ")
                 .Select(value => value.Replace('_', ' '))
                 .ToArray();
@@ -225,7 +225,7 @@ Invoke($param)
             Directory.CreateDirectory(logFolderPath);
 
             /* args */
-            var args = $"exec --logger MyLogger --file-logger {logFolderPath} --arg param=MyMessage {tmpScriptFilePath}"
+            var args = $"exec {tmpScriptFilePath} --logger MyLogger --file-logger {logFolderPath} --arg param=MyMessage"
                 .Split(" ")
                 .Select(value => value.Replace('_', ' '))
                 .ToArray();

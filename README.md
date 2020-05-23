@@ -29,8 +29,10 @@ pwshext exec sample.ps1
 If you want to pass arguments to the script, you need to add the `--arg` argument for each argument to pass.
 
 ```powershell
-pwshext exec --arg arg1=value1 --arg "arg2=value 2 with space" sample.ps1
+pwshext exec sample.ps1 --arg arg1=value1 --arg "arg2=value 2 with space"
 ```
+
+> **Known Issue:** Whenever you use `--arg`, put the script name (here: `sample.ps1`) directly behind `exec`. In all other cases, you should put the script name at the end of the command. There is an open issue at GitHub to find a solution (https://github.com/dotnet/command-line-api/issues/910).
 
 Make sure your script accepts the desired arguments:
 
