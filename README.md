@@ -1,7 +1,7 @@
 # pwshext
 
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/apollo3zehn/pwshext?svg=true)](https://ci.appveyor.com/project/Apollo3zehn/pwshext)
-[![NuGet](https://img.shields.io/nuget/vpre/pwshext.svg)](https://www.nuget.org/packages?q=pwshext)
+[![NuGet](https://img.shields.io/nuget/vpre/pwshext.svg)](https://www.nuget.org/packages/pwshext/)
 
 Powershell Extended aims to bring .NET logging and FTP access functionality. Therefore it has an integrated [Console logger](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?view=aspnetcore-3.1#console), [File logger](https://github.com/serilog/serilog), [FTP(s) client](https://github.com/robinrodricks/FluentFTP) and [SFTP client](https://github.com/sshnet/SSH.NET).
 
