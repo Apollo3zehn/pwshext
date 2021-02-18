@@ -27,7 +27,7 @@ namespace pwshext.Commands
 
         public void Run()
         {
-            using (PowerShell ps = PowerShell.Create())
+            using (var ps = PowerShell.Create())
             {
                 // ensure FluentFTP lib is loaded
                 _ = new FtpClient();
