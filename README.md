@@ -1,3 +1,5 @@
+> This repository has been archived and will not be further developed because I switched to Python as a scripting alternative with integrated FTP and logging support.
+
 # pwshext
 
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/apollo3zehn/pwshext?svg=true)](https://ci.appveyor.com/project/Apollo3zehn/pwshext)
